@@ -1,9 +1,11 @@
-var info = require('./info.json');
+var info = require('./parse-config.json');
 var pathToCal = "/home/noc/cal.json";
 var fs = require('fs');
 var Parse = require('parse/node');
 
-Parse.initialize(info.appId,info.serverURL);
+Parse.initialize(info.appId);
+Parse.serverURL = info.serverURL;
+
 var calString = fs.readFileSync(pathToCal,"UTF8").replace(/\s+|\\n|\\t/g, ' '); //check if regex is needed 
 var json = JSON.parse(calString); 
 
