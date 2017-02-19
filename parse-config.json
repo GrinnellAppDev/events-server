@@ -1,6 +1,6 @@
 {
- "databaseURI": "mongodb://appdev:eventsapp@IP_SERVER:27017/parse",
- "port": 8080,
+ "databaseURI": "mongodb://appdev:eventsapp@localhost:27017/parse",
+ "port": 8999,
  "appId": "f8dd0d83bdc78b82378bb69e725d2f28",
  "masterKey":"e66042836eccb6f6f7ca0b1da270ebca"
 }
