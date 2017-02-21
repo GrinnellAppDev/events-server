@@ -1,14 +1,13 @@
 var FeedParser = require('feedparser');
 var request = require('request'); // for fetching the feed
-var info = require('./parse-config.json');
 var Parse = require('parse/node');
 var req = request('http://25livepub.collegenet.com/calendars/alleventsfrontpage.xml')
 var feedparser = new FeedParser();
 var events = [];
 var EventObject = Parse.Object.extend("Event");
 
-Parse.initialize(info.appId);
-Parse.serverURL = info.serverURL;
+Parse.initialize("f8dd0d83bdc78b82378bb69e725d2f28");
+Parse.serverURL = "http://localhost:8999/parse/";
 
 req.on('response', function (res) {
   var stream = this; // `this` is `req`, which is a stream
@@ -37,30 +36,11 @@ feedparser.on('readable', function () {
 });
 
 feedparser.on('finish', function () {
-  
-  /*
-  console.log("All Events Processed. Deleting old event data from server...");
-  var query = new Parse.Query("Event");
-  query.limit(1000);
-  query.find({
-	  success: function(results){
-		  for (var i = 0; i < results.length; i++){
-			  console.log("Deleting " + (i+1) + " of " + results.length);
-			  results[i].destroy();
-		  }
-	  }, 
-    error: function(error){
-      console.log(error);
-	  }});
-  */
-  console.log("Saving new events...");
-  //console.log(events);
-  Parse.Object.saveAll([events],{
-    success: function(list) {
-      console.log("All events saved.");
-    },
-    error: function(error) {
-      console.log(error);
-    },
-    });
-  });
+
+  console.log("Saving " + events.length + " events"); 
+  events[0].save();
+  for (e of events)
+  {
+    e.save();
+  }
+});
