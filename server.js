@@ -15,5 +15,5 @@ app.use('/parse', api);
 // Listen for connections on port 8999 
 var port = 8999;
 app.listen(port, function() {
-  console.log('parse-server-example running on port ' + port + '.');
+  console.log('parse-server running on port ' + port + '.');
 });
