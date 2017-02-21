@@ -1,0 +1,10 @@
+[Unit]
+Description = Job that starts the local Parse Server
+
+[Service]
+type=forking
+Enviroment=/home/events/events-server
+ExecStart=/usr/local/bin/node /home/events/events-server/server.js
+
+[Install]
+WantedBy=multi-user.target
