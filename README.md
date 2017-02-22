@@ -29,7 +29,7 @@ Create the service file to start the server automatically
 
 reload systemctl to see the new service:
 
-`systemctl daemon-reload`
+`sudo systemctl daemon-reload`
 
 Enable the service:
 
