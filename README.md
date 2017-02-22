@@ -8,6 +8,9 @@ Install MongoDB as shown here: https://www.linode.com/docs/databases/mongodb/ins
 No need too create users.
 
 Clone the Repo
+
+`git clone https://github.com/GrinnellAppDev/events-server`
+
 `cd events-server`
 
 install npm dependencies
