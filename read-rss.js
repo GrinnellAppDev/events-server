@@ -19,26 +19,32 @@ req.on('response', function (res) {
   }
 });
 
-
+//var test;
 feedparser.on('readable', function () {
   // This is where the action is!
   var stream = this; // `this` is `feedparser`, which is a stream
   var meta = this.meta; // **NOTE** the "meta" is always available in the context of the feedparser instance
   var item;
   var e;
+  var description;
   while (item = stream.read()) {
+    description = item.description.split("<br/>"); //description is an html element from the RSS feed
     e = new EventObject(); 
     e.set("eventid", item.guid);
     e.set("title", item.title);
-    e.set("date", item.guid);
+    e.set("location",description[0]); //if the RSS feed format changes, these will need to be changed
+    e.set("date", description[1]);
     events.push(e);
+    
+   // test = item;
   }
 });
 
 feedparser.on('finish', function () {
-
+  //var d = test.description.split("<br/>");
+  //console.log(d);
   console.log("Saving " + events.length + " events"); 
-  events[0].save();
+  //events[0].save();
   for (e of events)
   {
     e.save();
