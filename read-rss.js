@@ -57,9 +57,8 @@ req.on('response', function (res) {
 });
 
 feedparser.on('readable', function () {
-  // This is where the action is!
   var stream = this; // `this` is `feedparser`, which is a stream
-  var meta = this.meta; // **NOTE** the "meta" is always available in the conteeventt of the feedparser instance
+  var meta = this.meta; // **NOTE** the "meta" is always available 
   var item;
   var description;
   var evnt;  
@@ -78,21 +77,36 @@ feedparser.on('readable', function () {
 });
 
 feedparser.on('finish', function () {
-  //console.log("events updated " + updateCount);
-  //console.log("total events " + totalCount);
-  //console.log("new events " + (totalCount-updateCount));
-  //var query = new Parse.Query(EventObject).contains("eventid",item.guid);
+  //
+  //
+  //
+  //
   //var log = query.find({success:function(results) {
-  //var d = test.description.split("<br/>");
   //console.log(d);
   //events[0].save();
   
   //var query = new Parse.Query(Event);
   //query.contains("eventid",
+  var updateCount = 0;
+  var totalCount = 0;
+  var query; 
+  var log;
   console.log("saving " + events.length + " events");
-  for (var e of events)
+  //e.save();
+  for (var evnt of events)
   {
-    e.save();
+    query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid")); 
+    log = query.find({
+        success: results => {
+                              for (var result of results) result.destroy();
+                              updateCount +=1;
+                            },
+        error:   error   => { console.log(error); }
+        });
+    evnt.save();
+    totalCount +=1;
   }
- 
+  console.log("events updated " + updateCount);
+  console.log("total events " + totalCount);
+  console.log("new events " + (totalCount-updateCount));
 });
