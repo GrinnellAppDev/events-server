@@ -6,6 +6,9 @@ var feedparser = new FeedParser();
 var events = [];
 var EventObject = Parse.Object.extend("Event");
 
+var updateCount = 0;
+var totalCount = 0;
+ 
 Parse.initialize("f8dd0d83bdc78b82378bb69e725d2f28");
 Parse.serverURL = "http://localhost:8999/parse/";
 
@@ -76,6 +79,24 @@ feedparser.on('readable', function () {
   }
 });
 
+
+/*
+removes duplicates
+searches database for events that have the same eventid
+*/
+function removeDuplicate(guid){
+  var query = new Parse.Query(EventObject).contains("eventid",guid);
+  /*
+  var log = query.find({
+    success: results => {
+                          console.log("results length "+results.length);
+                          for (var result of results) result.destroy();
+                          updateCount +=1;
+                         },
+    error:   error   => { console.log(error); }
+    */
+});
+
 feedparser.on('finish', function () {
   //
   //
@@ -87,22 +108,12 @@ feedparser.on('finish', function () {
   
   //var query = new Parse.Query(Event);
   //query.contains("eventid",
-  var updateCount = 0;
-  var totalCount = 0;
-  var query; 
-  var log;
   console.log("saving " + events.length + " events");
   //e.save();
   for (var evnt of events)
   {
+    removeDuplicate(evnt.get("eventid")).then(() => {;
     query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid")); 
-    log = query.find({
-        success: results => {
-                              for (var result of results) result.destroy();
-                              updateCount +=1;
-                            },
-        error:   error   => { console.log(error); }
-        });
     evnt.save();
     totalCount +=1;
   }
