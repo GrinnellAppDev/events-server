@@ -110,8 +110,15 @@ feedparser.on('finish', function () {
   //query.contains("eventid",
   console.log("saving " + events.length + " events");
   //e.save();
-  for (var evnt of events)
-  {
+  var evnt = events.pop();
+  var query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid"))
+  .then(results => {
+    updateCount +=1;
+    return results.destroyAll(results);
+  }).then( ()=> {
+    evnt = events.pop();//make this recursive 
+
+
     removeDuplicate(evnt.get("eventid")).then(() => {;
     query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid")); 
     evnt.save();
