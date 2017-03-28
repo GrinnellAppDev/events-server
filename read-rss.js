@@ -88,7 +88,7 @@ function removeDuplicates(){
   if (events.length == 0) return;
   var evnt = events.pop();
   var query = new Parse.Query(EventObject);
-  query.("eventid",evnt.get("eventid"))
+  query.find("eventid",evnt.get("eventid"))
     .then(results => {
       updateCount +=1;
       return EventObject.destroyAll(results);
