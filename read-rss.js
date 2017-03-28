@@ -84,8 +84,20 @@ feedparser.on('readable', function () {
 removes duplicates
 searches database for events that have the same eventid
 */
-function removeDuplicate(guid){
-  var query = new Parse.Query(EventObject).contains("eventid",guid);
+function removeDuplicates(){
+  if (events.length == 0) return;
+  var evnt = events.pop();
+  var query = new Parse.Query(EventObject);
+  query.("eventid",evnt.get("eventid"))
+    .then(results => {
+      updateCount +=1;
+      return EventObject.destroyAll(results);
+  }).then(()=> {
+     removeDuplicates();
+  });
+}
+
+
   /*
   var log = query.find({
     success: results => {
@@ -94,37 +106,17 @@ function removeDuplicate(guid){
                           updateCount +=1;
                          },
     error:   error   => { console.log(error); }
-    */
+    
 });
-
-feedparser.on('finish', function () {
-  //
-  //
-  //
-  //
-  //var log = query.find({success:function(results) {
-  //console.log(d);
-  //events[0].save();
-  
-  //var query = new Parse.Query(Event);
-  //query.contains("eventid",
+*/
+feedparser.on('finish', ()=> {
   console.log("saving " + events.length + " events");
   //e.save();
-  var evnt = events.pop();
-  var query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid"))
-  .then(results => {
-    updateCount +=1;
-    return results.destroyAll(results);
-  }).then( ()=> {
-    evnt = events.pop();//make this recursive 
-
-
-    removeDuplicate(evnt.get("eventid")).then(() => {;
-    query = new Parse.Query(EventObject).contains("eventid",evnt.get("eventid")); 
-    evnt.save();
-    totalCount +=1;
-  }
+  var total = events.length; 
+  removeDuplicates();
+  for (var evnt of events) evnt.save();
+  
   console.log("events updated " + updateCount);
-  console.log("total events " + totalCount);
-  console.log("new events " + (totalCount-updateCount));
+  console.log("total saved" + total);
+  console.log("new events " + (total-updateCount));
 });
