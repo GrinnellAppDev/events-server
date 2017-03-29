@@ -85,15 +85,35 @@ removes duplicates
 searches database for events that have the same eventid
 */
 function removeDuplicates(){
-  if (events.length == 0) return;
+  console.log(events.length);
+  if (events.length == 0) {
+    console.log("events updated " + updateCount);
+    console.log("total saved" + total);
+    console.log("new events " + (total-updateCount));
+    return;
+  } 
+  
   var evnt = events.pop();
   var query = new Parse.Query(EventObject);
-  query.find("eventid",evnt.get("eventid"))
-    .then(results => {
-      updateCount +=1;
-      return EventObject.destroyAll(results);
+  query.equalTo("eventid",evnt.get("eventid"));
+  query.find()
+    .then(outDatedPosts => {
+     updateCount +=1;
+     return Parse.Object.destroyAll(outDatedPosts);
   }).then(()=> {
-     removeDuplicates();
+     return evnt.save();
+  },
+  error => {
+  console.log(error);
+  console.log("destroyAll error")
+  })
+  .then( e=> {
+     console.log("here");
+     removeDuplicates()
+  },
+  error =>{
+    console.log(error); 
+    console.log("save error");
   });
 }
 
@@ -111,12 +131,6 @@ function removeDuplicates(){
 */
 feedparser.on('finish', ()=> {
   console.log("saving " + events.length + " events");
-  //e.save();
   var total = events.length; 
   removeDuplicates();
-  for (var evnt of events) evnt.save();
-  
-  console.log("events updated " + updateCount);
-  console.log("total saved" + total);
-  console.log("new events " + (total-updateCount));
-});
+  });
