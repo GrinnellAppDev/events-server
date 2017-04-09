@@ -135,6 +135,8 @@ feedparser.on('finish', ()=> {
   var total = events.length; 
   var evnt = events.pop();
   console.log("before save");
+  console.log(evnt.get("startTime"));
+  console.log(evnt.get("endTime"));
   evnt.save()
   .then(function(e) 
   {
