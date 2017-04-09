@@ -85,14 +85,14 @@ removes duplicates
 searches database for events that have the same eventid
 */
 function removeDuplicates(){
-  console.log(events.length);
+  console.log("here: " + events.length);
   if (events.length == 0) {
     console.log("events updated " + updateCount);
     console.log("total saved" + total);
     console.log("new events " + (total-updateCount));
     return;
   } 
-  
+   
   var evnt = events.pop();
   var query = new Parse.Query(EventObject);
   query.equalTo("eventid",evnt.get("eventid"));
@@ -101,6 +101,7 @@ function removeDuplicates(){
      updateCount +=1;
      return Parse.Object.destroyAll(outDatedPosts);
   }).then(()=> {
+     console.log(evnt.date);
      return evnt.save();
   },
   error => {
@@ -132,5 +133,16 @@ function removeDuplicates(){
 feedparser.on('finish', ()=> {
   console.log("saving " + events.length + " events");
   var total = events.length; 
-  removeDuplicates();
+  var evnt = events.pop();
+  console.log("before save");
+  evnt.save()
+  .then(function(e) 
+  {
+    console.log("should happen last " + e);
+  }, function(error) {
+      console.log(error)
   });
+  console.log("did it.");
+                  
+});
+  
