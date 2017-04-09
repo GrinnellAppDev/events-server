@@ -25,7 +25,17 @@ function convertDate(date){
   var day = split[0] + ","+ split[1] + "," + split[2]; //Thursday, March 16, 2015
   startDate = day + " " + convertTime(startTime); 
   var endDate = day + " " + convertTime(endTime); 
-  return [new Date(startDate),new Date(endDate)];
+  var startDateDate = new Date(startDate);
+  var endDateDate = new Date(endDate);
+  if(startDateDate.toString() == "Invalid Date"){
+    console.log("Invalid start: " + startDate);
+    }
+
+  if(endDateDate.toString()=="Invalid Date"){
+    console.log("Invalid end: " + endDate);
+    }
+
+  return [startDateDate,endDateDate];
 }
 /* helper for convertDate */
 function convertTime(time){
@@ -137,6 +147,7 @@ feedparser.on('finish', ()=> {
   console.log("before save");
   console.log(evnt.get("startTime"));
   console.log(evnt.get("endTime"));
+  /*
   evnt.save()
   .then(function(e) 
   {
@@ -145,6 +156,6 @@ feedparser.on('finish', ()=> {
       console.log(error)
   });
   console.log("did it.");
-                  
+                  */
 });
   
