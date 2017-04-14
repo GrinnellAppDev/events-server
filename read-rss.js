@@ -22,9 +22,28 @@ function convertDate(date){
   var day = split[0] + ","+ split[1] + "," + split[2]; //Thursday, March 16, 2015
   startDate = day + " " + convertTime(startTime); 
   var endDate = day + " " + convertTime(endTime); 
-  return [new Date(startDate),new Date(endDate)];
+  var startDateDate = new Date(startDate);
+  var endDateDate = new Date(endDate);
+  if(startDateDate.toString() == "Invalid Date"){
+    console.log("Invalid start: " + startDate);
+    console.log("Original: " + date);
+  }
+  else {
+    console.log("worked: " + startDate);
+    }
+  if(endDateDate.toString()=="Invalid Date"){
+    console.log("Invalid end: " + endDate);
+    console.log("Original: " + date);
+  }
+  else {
+    console.log("worked: " + endDate);
+    }
+
+  return [startDateDate,endDateDate];
 }
 /* helper for convertDate */
+
+/*currently problem in this procedure, sometimes the input won't specify am or pm */
 function convertTime(time){
   time = time.replace(" ",""); //removes leading space
   if (time.length <= 4) {
@@ -90,9 +109,11 @@ feedparser.on('finish', function () {
   //var query = new Parse.Query(Event);
   //query.contains("eventid",
   console.log("saving " + events.length + " events");
+  /*
   for (var e of events)
   {
     e.save();
   }
+  */
  
 });
