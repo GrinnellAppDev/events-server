@@ -5,12 +5,17 @@ var req = request('http://25livepub.collegenet.com/calendars/alleventsfrontpage.
 var feedparser = new FeedParser();
 var events = [];
 var EventObject = Parse.Object.extend("Event");
-
+var S = require('string');
 Parse.initialize("f8dd0d83bdc78b82378bb69e725d2f28");
 Parse.serverURL = "http://localhost:8999/parse/";
 
 /* converts Thursday, March 16, 2017, 11am&nbsp;&ndash;&nbsp;12pm"
    to "Thursday, March 16, 2017, 11:00 pm" 
+*/
+/*
+bug right now- the first date input does not show pm. Need to fix by adding it if the second date
+has pm. need to check if the full date only has one instance of 'pm', then both dates will be in pm, and one
+needs to be added manually
 */
 
 function convertDate(date){
@@ -20,23 +25,25 @@ function convertDate(date){
   split = startDate.split(",");
   var startTime = split[split.length-1]; 
   var day = split[0] + ","+ split[1] + "," + split[2]; //Thursday, March 16, 2015
+  console.log("s " +startTime);
+  console.log("e " +endTime);
   startDate = day + " " + convertTime(startTime); 
   var endDate = day + " " + convertTime(endTime); 
   var startDateDate = new Date(startDate);
   var endDateDate = new Date(endDate);
   if(startDateDate.toString() == "Invalid Date"){
-    console.log("Invalid start: " + startDate);
-    console.log("Original: " + date);
+    //console.log("Invalid start: " + startDate);
+    console.log("bad s: " + date);
   }
   else {
-    console.log("worked: " + startDate);
+    console.log("gud s: " + date);
     }
   if(endDateDate.toString()=="Invalid Date"){
-    console.log("Invalid end: " + endDate);
-    console.log("Original: " + date);
+    //console.log("Invalid end: " + endDate);
+    console.log("bad e: " + date);
   }
   else {
-    console.log("worked: " + endDate);
+    console.log("gud e: " + date);
     }
 
   return [startDateDate,endDateDate];
@@ -45,6 +52,7 @@ function convertDate(date){
 
 /*currently problem in this procedure, sometimes the input won't specify am or pm */
 function convertTime(time){
+  console.log(time);
   time = time.replace(" ",""); //removes leading space
   if (time.length <= 4) {
     var ar = time.split('');
@@ -53,6 +61,7 @@ function convertTime(time){
   }
   var ar = time.split('');
   ar.splice(ar.length - 2,0," ");
+  console.log(ar.join(''));
   return ar.join(''); 
 }
 
@@ -74,7 +83,9 @@ req.on('response', function (res) {
     stream.pipe(feedparser);
   }
 });
-
+var test = "Saturday, April 22, 2017, 4&nbsp;&ndash;&nbsp;5:30pm"
+convertDate(test);
+/*
 feedparser.on('readable', function () {
   // This is where the action is!
   var stream = this; // `this` is `feedparser`, which is a stream
@@ -114,6 +125,6 @@ feedparser.on('finish', function () {
   {
     e.save();
   }
-  */
  
 });
+*/
